@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">SampleFileIO</string>
+    <string name="fileio_title">Sample File IO Example</string>
+    <string name="read_public_button">Read Public File</string>
+    <string name="read_public_text">Text read from public file</string>
+    <string name="write_public_button">Write public File</string>
+    <string name="write_public_text">Text written to public file</string>
+    <string name="read_private_button">Read Private File</string>
+    <string name="read_private_text">Text read from private file</string>
+    <string name="write_private_button">Write Private File</string>
+    <string name="write_private_text">Text written to Private file</string>
+    <string name="last_action_status">No Previous Action</string>
+    <string name="redisplay_button">Redisplay</string>
+
+    <string name="select_read_public_file">"Select a Pubilc file to read"</string>
+    <string name="select_write_public_file">"Select a Pubilc file to write"</string>
+</resources>
