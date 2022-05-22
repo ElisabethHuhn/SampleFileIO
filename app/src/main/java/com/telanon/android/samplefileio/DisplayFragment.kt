@@ -10,10 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.telanon.android.samplefileio.databinding.DisplayFragmentBinding
-import com.telanon.android.samplefileio.fileio.readFromPrivateFile
-import com.telanon.android.samplefileio.fileio.readFromPublicUri
-import com.telanon.android.samplefileio.fileio.writeToPrivateFile
-import com.telanon.android.samplefileio.fileio.writeToPublicUri
+import com.telanon.android.samplefileio.fileio.*
 
 class DisplayFragment : Fragment() {
 
@@ -196,9 +193,14 @@ class DisplayFragment : Fragment() {
                 val fileUri = resultData.data
 
                 if (fileUri != null) {
+
                     writeToPublicUri(fileUri,
                         requireActivity() as AppCompatActivity,
                         sharedViewModel)
+
+                    //to write another line to the File
+                    val lineToWrite = "A second line of text to the file"
+                    appendToPublicFile(fileUri, requireActivity() as AppCompatActivity, sharedViewModel, lineToWrite)
 
                     navigateToNextScreen()
                 }

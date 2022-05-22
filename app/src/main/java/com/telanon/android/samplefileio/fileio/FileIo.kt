@@ -36,8 +36,8 @@ fun readFromPublicUri(uri: Uri, activity : AppCompatActivity, sharedVM : SharedV
 fun readFromPrivateFile(sharedVM: SharedViewModel, activity: AppCompatActivity) {
 
     //set defaults for failure, success will override
-    var textReadFromFile = readFromPrivateFile(PRIVATE_FILE_NAME, activity)
-    var status = "Private Read SUCCEEDED"
+    val textReadFromFile = readFromPrivateFile(PRIVATE_FILE_NAME, activity)
+    val status = "Private Read SUCCEEDED"
 
 
     sharedVM.textFromPrivateRead = textReadFromFile
@@ -52,13 +52,31 @@ fun writeToPublicUri(uri: Uri, activity : AppCompatActivity, sharedVM : SharedVi
     //Build the String to output to file
     val headerLine = "Text written to public file:"
     strBuilder.append(headerLine)
-    strBuilder.append(sharedViewModel.textToPrivateWrite)
+    strBuilder.append(sharedViewModel.textToPublicWrite)
 
     activity.contentResolver.openOutputStream(uri)?.use { outputStream ->
 
         BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
             try {
                 writer.write(strBuilder.toString())
+                status = "Public Write SUCCEEDED"
+
+            } catch (e : java.lang.Exception) {
+                status = status + "\n" + e.toString()
+            }
+        }
+        sharedViewModel.lastActionStatus = status
+    }
+}
+
+fun appendToPublicFile(uri: Uri, activity : AppCompatActivity, sharedViewModel : SharedViewModel, lineToWrite: String){
+    var status = "Public Write FAILED: Exception thrown trying to write to private file"
+
+    activity.contentResolver.openOutputStream(uri)?.use { outputStream ->
+
+        BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
+            try {
+                writer.write(lineToWrite)
                 status = "Public Write SUCCEEDED"
 
             } catch (e : java.lang.Exception) {
