@@ -7,9 +7,11 @@
     <string name="write_public_text">Text written to public file</string>
     <string name="read_private_button">Read Private File</string>
     <string name="read_private_text">Text read from private file</string>
+    <string name="create_private_button">Create Private File</string>
     <string name="write_private_button">Write Private File</string>
     <string name="write_private_text">Text written to Private file</string>
     <string name="last_action_status">No Previous Action</string>
+    <string name="copy_button">Copy Private to Public</string>
     <string name="redisplay_button">Redisplay</string>
 
     <string name="select_read_public_file">"Select a Pubilc file to read"</string>

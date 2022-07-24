@@ -18,28 +18,26 @@
         android:id="@+id/fileio_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="4dp"
         android:text="@string/fileio_title"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintTop_toTopOf="parent"
-
         />
     <Button
         android:id="@+id/fileio_read_public_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="30sp"
+        android:layout_marginTop="10sp"
         android:text="@string/read_public_button"
         android:visibility="visible"
 
         app:layout_constraintTop_toBottomOf="@id/fileio_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         />
     <TextView
         android:id="@+id/fileio_read_public_text"
@@ -52,7 +50,6 @@
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintTop_toBottomOf="@id/fileio_read_public_button"
-
         />
 
     <Button
@@ -60,14 +57,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="30sp"
+        android:layout_marginTop="10sp"
         android:text="@string/read_private_button"
         android:visibility="visible"
 
         app:layout_constraintTop_toBottomOf="@id/fileio_read_public_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         />
     <TextView
         android:id="@+id/fileio_read_private_text"
@@ -80,7 +76,6 @@
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintTop_toBottomOf="@id/fileio_read_private_button"
-
         />
 
 
@@ -89,14 +84,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:text="@string/write_public_button"
         android:visibility="visible"
 
         app:layout_constraintTop_toBottomOf="@id/fileio_read_private_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         />
     <EditText
         android:id="@+id/fileio_write_public_text"
@@ -109,65 +103,86 @@
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintTop_toBottomOf="@id/fileio_write_public_button"
-
         />
+        <Button
+            android:id="@+id/fileio_create_private_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="10dp"
+            android:text="@string/create_private_button"
+            android:visibility="visible"
+
+            app:layout_constraintTop_toBottomOf="@id/fileio_write_public_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
     <Button
         android:id="@+id/fileio_write_private_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="4dp"
         android:text="@string/write_private_button"
         android:visibility="visible"
 
-        app:layout_constraintTop_toBottomOf="@id/fileio_write_public_text"
+        app:layout_constraintTop_toBottomOf="@id/fileio_create_private_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         />
     <EditText
         android:id="@+id/fileio_write_private_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:hint="@string/write_private_text"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintTop_toBottomOf="@id/fileio_write_private_button"
-
         />
+
+        <Button
+            android:id="@+id/fileio_copy.button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="10dp"
+            android:text="@string/copy_button"
+            android:visibility="visible"
+
+            app:layout_constraintTop_toBottomOf="@id/fileio_write_private_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
         <Button
             android:id="@+id/fileio_redisplay_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:text="@string/redisplay_button"
             android:visibility="visible"
 
-            app:layout_constraintTop_toBottomOf="@id/fileio_write_private_text"
+            app:layout_constraintTop_toBottomOf="@id/fileio_copy.button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-
             />
         <TextView
             android:id="@+id/fileio_last_action_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="@string/last_action_status"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
 
             app:layout_constraintTop_toBottomOf="@id/fileio_redisplay_button"
-
-
             />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,16 +1,20 @@
 package com.telanon.android.samplefileio
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.telanon.android.samplefileio.databinding.DisplayFragmentBinding
 import com.telanon.android.samplefileio.fileio.*
+import kotlinx.coroutines.*
+import java.io.File
 
 class DisplayFragment : Fragment() {
 
@@ -23,6 +27,8 @@ class DisplayFragment : Fragment() {
     private var _binding:  DisplayFragmentBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+
+    private var myJob: Job? = null
 
     /**
      * Read Public Click Listener -
@@ -54,7 +60,7 @@ class DisplayFragment : Fragment() {
         sharedViewModel.textToPublicWrite = textToWrite
 
         //open the public file for write
-        requestWritePublicFile()
+        requestWritePublicFile(REQUEST_WRITE_TO_FILE)
 
         //Navigation to redisplay this fragment is in onActivityReceive()
     }
@@ -73,6 +79,25 @@ class DisplayFragment : Fragment() {
     }
 
     /**
+     * create private Click Listener -
+     *  o executes when create button is selected
+     *  o triggers navigation to this Fragment
+     */
+    private val createPrivateOnClickListener = View.OnClickListener { itemView ->
+        //Move the text from the UI EditText view to the shared view model
+        var textToWrite = binding.fileioWritePrivateText.text.toString()
+        if (textToWrite == null) {
+            textToWrite = getString(R.string.write_private_text)
+        }
+        sharedViewModel.textToPrivateWrite = textToWrite
+
+        //just write directly to the private file
+        writeToPrivateFile(requireActivity() as AppCompatActivity, sharedViewModel, isCreate = true)
+
+        //cycle back to this fragment to display
+        itemView.findNavController().navigate(navigateAction)
+    }
+    /**
      * write private Click Listener -
      *  o executes when write button is selected
      *  o triggers navigation to this Fragment
@@ -86,8 +111,24 @@ class DisplayFragment : Fragment() {
         sharedViewModel.textToPrivateWrite = textToWrite
 
         //just write directly to the private file
-        writeToPrivateFile(requireActivity() as AppCompatActivity, sharedViewModel)
+        writeToPrivateFile(requireActivity() as AppCompatActivity, sharedViewModel, isCreate = false)
 
+        //cycle back to this fragment to display
+        itemView.findNavController().navigate(navigateAction)
+    }
+
+    /**
+     * Copy Click Listener -
+     *  o executes when copy button is selected
+     *  o triggers navigation to this Fragment
+     */
+    private val copyOnClickListener = View.OnClickListener { itemView ->
+        sharedViewModel.lastActionStatus = getString(R.string.last_action_status)
+
+        //If a background job is running, cancel it
+        myJob?.cancel()
+        //copy private file to public file
+        requestWritePublicFile(REQUEST_COPY_FILE)
         //cycle back to this fragment to display
         itemView.findNavController().navigate(navigateAction)
     }
@@ -99,6 +140,9 @@ class DisplayFragment : Fragment() {
      */
     private val redisplayOnClickListener = View.OnClickListener { itemView ->
         sharedViewModel.lastActionStatus = getString(R.string.last_action_status)
+
+        //If a background job is running, candle it
+        myJob?.cancel()
         //cycle back to this fragment to display
         itemView.findNavController().navigate(navigateAction)
     }
@@ -135,7 +179,9 @@ class DisplayFragment : Fragment() {
             fileioReadPublicButton.setOnClickListener(readPublicOnClickListener)
             fileioWritePublicButton.setOnClickListener(writePublicOnClickListener)
             fileioReadPrivateButton.setOnClickListener(readPrivateOnClickListener)
+            fileioCreatePrivateButton.setOnClickListener(createPrivateOnClickListener)
             fileioWritePrivateButton.setOnClickListener(writePrivateOnClickListener)
+            fileioCopyButton.setOnClickListener(copyOnClickListener)
             fileioRedisplayButton.setOnClickListener(redisplayOnClickListener)
 
         }
@@ -153,7 +199,7 @@ class DisplayFragment : Fragment() {
         startActivityForResult(Intent.createChooser(intent, titleString), requestCode)
     }
 
-    private fun requestWritePublicFile() {
+    private fun requestWritePublicFile(commandCode: Int) {
 
         val titleString = getString(R.string.select_write_public_file)
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
@@ -164,9 +210,10 @@ class DisplayFragment : Fragment() {
         // Optionally, specify a URI for the directory that should be opened in
         // the system file picker before your app creates the document.
         //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
-        startActivityForResult(intent, REQUEST_WRITE_TO_FILE )
+        startActivityForResult(intent, commandCode )
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
@@ -193,14 +240,42 @@ class DisplayFragment : Fragment() {
                 val fileUri = resultData.data
 
                 if (fileUri != null) {
+                    sharedViewModel.textToPublicWrite = "First Line of text written\n"
 
-                    writeToPublicUri(fileUri,
-                        requireActivity() as AppCompatActivity,
-                        sharedViewModel)
+                    writeToPublicUri(
+                        uri = fileUri,
+                        activity = requireActivity() as AppCompatActivity,
+                        sharedViewModel = sharedViewModel
+                    )
 
-                    //to write another line to the File
-                    val lineToWrite = "A second line of text to the file"
-                    appendToPublicFile(fileUri, requireActivity() as AppCompatActivity, sharedViewModel, lineToWrite)
+
+                    //append to public file eludes me.
+                    //I can only figure out how to append to private file
+
+                    navigateToNextScreen()
+                }
+            }
+        }
+
+        else if (requestCode == REQUEST_COPY_FILE) {
+            if (resultCode == AppCompatActivity.RESULT_OK && resultData != null) {
+                val fileUri = resultData.data
+
+                if (fileUri != null) {
+                    sharedViewModel.textToPublicWrite = "First Line of text written\n"
+
+                    copyFromPrivateFile(
+                        uri = fileUri,
+                        activity = requireActivity() as AppCompatActivity,
+                        sharedViewModel = sharedViewModel
+                    )
+
+                    //to write more lines to the File, once per second
+//                    myJob = startRepeatingJob(
+//                        timeInterval = 1000L,
+//                        fileUri = fileUri,
+//                        sharedViewModel = sharedViewModel
+//                    )
 
                     navigateToNextScreen()
                 }
@@ -208,17 +283,37 @@ class DisplayFragment : Fragment() {
         }
     }
 
-
+    /**
+     * start Job
+     * val job = startRepeatingJob()
+     * cancels the job and waits for its completion
+     * job.cancelAndJoin()
+     * Params
+     * timeInterval: time milliSeconds
+     */
+    private fun startRepeatingJob(
+        timeInterval: Long,
+        fileUri: Uri,
+        sharedViewModel : SharedViewModel
+    ): Job {
+        return CoroutineScope(Dispatchers.Default).launch {
+            while (NonCancellable.isActive) {
+                delay(timeInterval)
+                sharedViewModel.textToPublicWrite = "Another line to write to file\n"
+                appendToPublicFile(fileUri, requireActivity() as AppCompatActivity, sharedViewModel)
+             }
+        }
+    }
 
 
     private fun navigateToNextScreen() {
-        //Once the ballot is loaded, navigate to next fragment
         view?.findNavController()?.navigate(navigateAction)
     }
 
     companion object {
         const val REQUEST_READ_FROM_FILE = 0
         const val REQUEST_WRITE_TO_FILE  = 1
+        const val REQUEST_COPY_FILE  = 2
     }
 
 }
